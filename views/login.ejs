@@ -5,15 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 </head>
 <body>
-    <a href="/auth/logout">Logout</a>
+    <!-- <a href="/auth/logout">Logout</a>
     <br>
     <a href="/auth/login">Login</a>
     <br>
     <a href="/">Homepage</a>
-    <br>
-    <hr>
-    <a href="/auth/google">Login using Google+</a>
+    <br> -->
+    <nav>
+        <div class="nav-wrapper">
+            <a href="#" class="brand-logo">MICO</a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li><a href="/auth/logout">Logout</a></li>
+                <li><a href="/auth/login">Login</a></li>
+                <li><a href="/">Homepage</a></li>
+            </ul>
+        </div>
+    </nav>
+    <a class="waves-effect waves-light btn" href="/auth/google">Login using Google+</a>
 </body>
 </html>
