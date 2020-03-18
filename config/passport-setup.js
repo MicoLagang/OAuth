@@ -16,5 +16,9 @@ passport.use(
         // passport callback function
         console.log('##########################');
         console.log(profile);
+
+        console.log(profile.id);
+        console.log(profile.displayName);
+        console.log(profile.photos[0].value);
     })
 );
