@@ -1,9 +1,10 @@
 {
   "name": "030520",
   "version": "1.0.0",
-  "description": "",
+  "description": "## Part 1: Setting up NodeJS environment ```bash > npm init -y > npm install express ejs > npm install nodemon -g > nodemon index.js ```",
   "main": "index.js",
   "scripts": {
+    "oauth-start":"nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,6 +20,7 @@
   "homepage": "https://github.com/cbatuic/oauth#readme",
   "dependencies": {
     "ejs": "^3.0.1",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "nodemon": "^2.0.2"
   }
 }
