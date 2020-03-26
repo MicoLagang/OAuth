@@ -1,14 +1,14 @@
 const router = require('express').Router();
 
 const authCheck = (req, res, next)=>{
-    console.log("*************************");
+    console.log("*********** Performing AuthCheck **************");
     console.log(req.user);
     if(!req.user){
-        // User is not logged in
+        // If user is not logged in then
         res.redirect('/auth/login');
     }
     else{
-        // User is logged in
+        // If user is logged in then
         next();
     }
 }
