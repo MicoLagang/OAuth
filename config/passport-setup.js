@@ -1,24 +1,25 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20');
+const GitHubStrategy = require('passport-github').Strategy;
+
 const keys = require('./keys');
 const User = require('../models/user-model');
 
-passport.serializeUser((user, done)=>{
-    done(null, user.id); // A piece of info and save it to cookies
-});
 
-passport.deserializeUser((id, done)=>{
-    //Who's id is this?
-    User.query(`select row_to_json (u) from ( SELECT "oauth".findById(${id}) as user) u;`,(err,res)=>{
-        if(err){
-            console.log(err);
-        }else{                        
-            const user = res.rows[0].row_to_json.user;
-            console.log(">>>> deserializeUser >>>>> ",user);
-            done(null, user); 
-        }        
+
+
+passport.use(
+    new GitHubStrategy({
+        clientID: keys.github.clientID,
+        clientSecret: keys.github.clientSecret,
+        callbackURL: "http://localhost:3000/auth/github/callback"
+  },
+  function(accessToken, refreshToken, profile, cb) {
+    User.findOrCreate({ githubId: profile.id }, function (err, user) {
+      return cb(err, user);
     });
-});
+  }
+));
 
 passport.use(
     new GoogleStrategy({
@@ -31,27 +32,27 @@ passport.use(
         console.log('##########################');
         console.log(profile);
         
-        // const sql1 = `select count(*) as result from "oauth".user where id=${profile.id}`;
-        // User.query(sql1,(err,res)=>{
-        //     console.log(`>>>>>>>>>>>>>> res = ${JSON.stringify(res)}`)
-        //     console.log(`>>>>>>>>>>>>>> result = ${res.rows[0].result}`)
-        //     if(res.rows[0].result==0 && res.rows[0].result!=undefined){
-        //         const sql2 = `INSERT INTO "oauth".user 
-        //         VALUES( ${profile.id},
-        //                 '${profile.displayName}',
-        //                 ${profile.photos[0].value})`;
-        //         User.query(sql2,(err1, res1)=>{
-        //             if(err1) User.end();
-        //             console.log("##############");
-        //             console.log("User has been successfully inserted!");
-        //             console.log(sql2);
-        //             User.end();
-        //         });
-        //         console.log("User inserted!");
-        //     }else{
-        //         console.log("User has been already inserted!");
-        //     }            
-        // });
+        const sql1 = `select count(*) as result from "oauth".user where id=${profile.id}`;
+        User.query(sql1,(err,res)=>{
+            console.log(`>>>>>>>>>>>>>> res = ${JSON.stringify(res)}`)
+            console.log(`>>>>>>>>>>>>>> result = ${res.rows[0].result}`)
+            if(res.rows[0].result==0 && res.rows[0].result!=undefined){
+                const sql2 = `INSERT INTO "oauth".user 
+                VALUES( ${profile.id},
+                        '${profile.displayName}',
+                        ${profile.photos[0].value})`;
+                User.query(sql2,(err1, res1)=>{
+                    if(err1) User.end();
+                    console.log("##############");
+                    console.log("User has been successfully inserted!");
+                    console.log(sql2);
+                    User.end();
+                });
+                console.log("User inserted!");
+            }else{
+                console.log("User has been already inserted!");
+            }            
+        });
 
         User.query(`CALL "oauth".insert_when_unique(${profile.id},
                                                     '${profile.displayName}',
@@ -82,3 +83,20 @@ passport.use(
 
     })
 );
+
+passport.serializeUser((user, done)=>{
+    done(null, user.id); // A piece of info and save it to cookies
+});
+
+passport.deserializeUser((id, done)=>{
+    //Who's id is this?
+    User.query(`select row_to_json (u) from ( SELECT "oauth".findById(${id}) as user) u;`,(err,res)=>{
+        if(err){
+            console.log(err);
+        }else{                        
+            const user = res.rows[0].row_to_json.user;
+            console.log(">>>> deserializeUser >>>>> ",user);
+            done(null, user); 
+        }        
+    });
+});

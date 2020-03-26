@@ -14,6 +14,20 @@ router.get('/logout',(req, res)=>{
     res.redirect('/');
 });
 
+
+// auth with github
+router.get('/github', passport.authenticate('github',{
+    scope: ['profile']
+}));
+
+// callback route for github to redirect to
+router.get('/github/callback', passport.authenticate('github', { failureRedirect: '/login' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/profile/');
+  });
+
+
 // auth with google
 router.get('/google',passport.authenticate('google',{
     scope: ['profile']
