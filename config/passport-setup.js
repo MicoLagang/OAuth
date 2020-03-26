@@ -6,8 +6,6 @@ const keys = require('./keys');
 const User = require('../models/user-model');
 
 
-
-
 passport.use(
     new GitHubStrategy({
         clientID: keys.github.clientID,
