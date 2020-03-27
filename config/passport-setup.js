@@ -8,14 +8,62 @@ const User = require('../models/user-model');
 
 passport.use(
     new GitHubStrategy({
+        // options for the github start
         clientID: keys.github.clientID,
         clientSecret: keys.github.clientSecret,
-        callbackURL: "http://localhost:3000/auth/github/callback"
-  },
-  function(accessToken, refreshToken, profile, cb) {
-    User.findOrCreate({ githubId: profile.id }, function (err, user) {
-      return cb(err, user);
-    });
+        callbackURL: 'http://localhost:3000/auth/github/callback'
+  }, (accessToken, refreshToken, profile, done)=>{
+        // check if user already exists in our database
+        console.log('########### GITHUB ###############');
+        console.log(profile);
+
+        const sql1 = `select count(*) as result from "oauth".user where id=${profile.id}`;
+        User.query(sql1,(err,res)=>{
+            console.log(`>>>>>>>>>>>>>> res = ${JSON.stringify(res)}`)
+            console.log(`>>>>>>>>>>>>>> result = ${res.rows[0].result}`)
+            if(res.rows[0].result==0 && res.rows[0].result!=undefined){
+                const sql2 = `INSERT INTO "oauth".user 
+                VALUES( ${profile.id},
+                        '${profile.displayName}',
+                        ${profile.photos[0].value})`;
+                User.query(sql2,(err1, res1)=>{
+                    if(err1) User.end();
+                    console.log("##############");
+                    console.log("User has been successfully inserted!");
+                    console.log(sql2);
+                    User.end();
+                });
+                console.log("User inserted!");
+            }else{
+                console.log("User has been already inserted!");
+            }            
+        });
+
+        // User.query(`CALL "oauth".insert_when_unique(${profile.id},
+        //                                             '${profile.displayName}',
+        //                                             '${profile.photos[0].value}');`,
+        //             (err,res)=>{
+        //                 console.log(">>>>>>>>>>>>>>>>>>>>>>");
+        //                 const _user = {
+        //                     id: profile.id,
+        //                     name: profile.displayName,                                
+        //                     picture: profile.photos[0].value
+        //                 };
+
+        //                 if(err){
+        //                     //already have the user
+        //                     const currentUser = _user;
+        //                     console.log('User is ', JSON.stringify(currentUser));
+        //                     done(null, currentUser);
+        //                     //console.log(err);
+        //                 }else{
+        //                     //if not, new user was created in our db
+        //                     const newUser = _user;
+        //                     console.log('New User created: ' + JSON.stringify(newUser));
+        //                     done(null, newUser);
+        //                     // console.log(res.rows[0]);
+        //                 }
+        //             });
   }
 ));
 
@@ -27,7 +75,7 @@ passport.use(
         clientSecret: keys.google.clientSecret
     }, (accessToken, refreshToken, profile, done)=>{
         // check if user already exists in our database
-        console.log('##########################');
+        console.log('########### GOOGLE ###############');
         console.log(profile);
         
         const sql1 = `select count(*) as result from "oauth".user where id=${profile.id}`;
@@ -77,8 +125,6 @@ passport.use(
                             // console.log(res.rows[0]);
                         }
                     });
-
-
     })
 );
 

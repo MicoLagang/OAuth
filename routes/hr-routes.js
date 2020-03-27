@@ -1,14 +1,13 @@
 const router = require('express').Router();
 const User = require('../models/user-model');
 
-
 // auth employee
 router.get('/emp',(req, res)=>{
     User.query(`select row_to_json (u) from ( select "lagang_hr".getAllEmployees() as employee) u;`,(err, res1)=>{
         if(err){
             alert(err)
         }else{
-            console.log(res1.rows[0].row_to_json.employee)
+            console.log(res1.rowCount)
             res.render('employee', {res1});
         }
     });
@@ -21,6 +20,7 @@ router.get('/dept',(req, res)=>{
             alert(err)
         }else{
             console.log(res1.rows[0].row_to_json.department)
+            console.log(res1.rowCount)
             res.render('department', {res1});
         }
     });
@@ -33,6 +33,7 @@ router.get('/empdept',(req, res)=>{
             alert(err)
         }else{
             console.log(res1.rows[0].row_to_json.empdept)
+            console.log(res1.rowCount)
             res.render('empdept', {res1});
         }
     });
@@ -45,6 +46,7 @@ router.get('/salary',(req, res)=>{
             alert(err)
         }else{
             console.log(res1.rows[0].row_to_json.salary)
+            console.log(res1.rowCount)
             res.render('salary', {res1});
         }
     });

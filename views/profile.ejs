@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 </head>
 <body>
+    <div id="loading" class="loading"></div>
     
     <nav>
         <div class="nav-wrapper">
@@ -25,13 +26,16 @@
             </ul>
         </div>
     </nav>
-
-    <h1>Welcome to your profile, <%= user._name %> </h1>    
-    <!-- <p>
-        extra information about you
-        <img src="<%= user._picture %>" alt="picture">
-        <p>This is your profile thumbnail</p>
-    </p> -->
+    <div class="row">
+        <div class="col s2">
+            <img style="width: 100%;" src="<%= user._picture %>" alt="picture">
+        </div>
+        <div class="col s10">
+            <h4>Welcome to your profile,</h4>
+            <h2> <%= user._name %> </h2>
+        </div>
+    </div>
+    
     <div class="row">
         <div class="col s2">
             <div class="collection">
@@ -43,8 +47,72 @@
         </div>
         <div class="col s10">
             <div class="card-panel teal lighten-2">Choose Data to Show</div>
+                
         </div>
     </div>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Lobster');
+        .loading {
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            background: white;
+            top: 0;
+            left: 0;
+            z-index: 99;
+        }
+        .loading:after {
+            content: "";
+            width: 50px;
+            height: 50px;
+            position: absolute;
+            top: -30px;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            margin: auto;
+            border: 6px solid hsl(330, 100%, 56%);
+            border-top: 6px dotted hsl(330, 100%, 56%);
+            border-bottom: 6px dotted hsl(330, 100%, 56%);
+            border-radius: 50%;
+            animation: loading 2s infinite;
+        }
+        .loading:before {
+            font-family: 'Lobster', cursive;
+            font-size: 20px;
+            letter-spacing: 1px;
+            color: hsl(330, 100%, 56%);
+            content: "Loading...";
+            position: absolute;
+            top: 53%;
+            text-align: center;
+            right: 0;
+            left: 0;
+            margin: auto;
+        }
+
+        @keyframes loading {
+            0% {
+                transform: rotate(0);
+            }
+            50% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+
+    <script>
+        setTimeout(function(){
+            document.getElementById("loading").style.display = "none";
+        }, 1000
+        );
+
+        $(document).ready(function(){
+        var loading = $(".loading");
+        loading.delay(loading.attr("delay-hide")).slideUp();
+        });
+    </script>
 
 </body>
 </html>
